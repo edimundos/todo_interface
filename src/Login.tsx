@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SetStateAction } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
@@ -78,20 +78,54 @@ function Login() {
       setIsLoading(true);
       setError("");
       
-      const res = await fetch(`${API}/register`, {
+      const requestBody = { username, password };
+      const requestOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify(requestBody),
+      };
+
+      // Log the request details
+      console.log("Register Request:", {
+        url: `${API}/register`,
+        options: requestOptions,
       });
+
+      const res = await fetch(`${API}/register`, requestOptions);
+
+      // Log the full response object
+      console.log("Register Response:", res);
+
+      if (!res.ok) {
+        const contentType = res.headers.get("Content-Type");
+        const errorText = contentType && contentType.includes("application/json")
+          ? (await res.json()).message
+          : await res.text();
+        setError(errorText || "An error occurred during registration");
+        toast({
+          title: "Registration failed",
+          description: errorText || "An error occurred during registration",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Handle empty response body for successful requests
+      const contentLength = res.headers.get("content-length");
+      const data = contentLength && parseInt(contentLength) > 0
+        ? await res.json()
+        : { message: "user created" }; // Default message for empty body
+
+      // Log the parsed response data
+      console.log("Parsed Register Response Data:", data);
       
-      const data = await res.json();
-      
-      if (data.message === "user created") {
+      // Change the check to be case-insensitive and await handleLogin
+      if (data.message && data.message.toLowerCase() === "user created") {
         toast({
           title: "Registration successful",
           description: "Account created! Logging you in...",
         });
-        handleLogin();
+        await handleLogin(); // now awaiting the login process
       } else {
         setError("Username already exists or invalid");
         toast({
@@ -107,6 +141,7 @@ function Login() {
         description: "Couldn't connect to the server",
         variant: "destructive",
       });
+      console.error("Error during registration:", err);
     } finally {
       setIsLoading(false);
     }

@@ -8,16 +8,14 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  
-    "compilerOptions": {
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleResolution": "bundler",
-      "types": ["vite/client"],
-      "baseUrl": "./src",
-      "paths": {
-        "@components/*": ["components/*"]
-      },
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["vite/client"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
     }
-  
+  }
 }

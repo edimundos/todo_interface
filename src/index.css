@@ -1,4 +1,3 @@
-
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -12,6 +11,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  @apply p-6;
 }
 
 :root {
@@ -93,6 +93,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  @apply px-4 py-2 rounded-md text-sm font-medium;
 }
 button:hover {
   border-color: #646cff;
@@ -100,6 +101,14 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+button.primary {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90;
+}
+
+button.secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/90;
 }
 
 @media (prefers-color-scheme: light) {
@@ -194,4 +203,44 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.task-card {
+  @apply bg-card text-card-foreground rounded-lg shadow-md p-4 mb-4;
+}
+
+.task-header {
+  @apply flex justify-between items-center mb-2;
+}
+
+.task-title {
+  @apply text-lg font-semibold;
+}
+
+.task-actions {
+  @apply flex gap-2;
+}
+
+.task-details {
+  @apply text-sm text-muted-foreground;
+}
+
+.task-badges {
+  @apply flex gap-2 mt-2;
+}
+
+.task-badge {
+  @apply inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.task-badge-priority {
+  @apply bg-primary text-primary-foreground;
+}
+
+.task-badge-status {
+  @apply bg-secondary text-secondary-foreground;
+}
+
+.task-badge-date {
+  @apply bg-muted text-muted-foreground;
 }

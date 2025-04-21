@@ -19,7 +19,7 @@ import {
 } from "./components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./components/ui/tooltip";
 import { Textarea } from "./components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 
 const API = "https://api.zeiris.id.lv/crud/api_v1";
@@ -84,8 +84,8 @@ function Tasks() {
       }
       
       const data = await res.json();
-      setTasks(data);
-      filterAndSortTasks(data, query, sort, activeTab);
+      setTasks(data || []); // Ensure tasks is always an array
+      filterAndSortTasks(data || [], query, sort, activeTab);
     } catch (err) {
       toast({
         title: "Error",
@@ -390,7 +390,7 @@ function Tasks() {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <DialogTrigger asChild>
-                          <Button size="icon" className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all">
+                          <Button size="icon" className="rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 transition-all p-2">
                             <Plus className="h-5 w-5" />
                           </Button>
                         </DialogTrigger>
@@ -400,9 +400,9 @@ function Tasks() {
                       </TooltipContent>
                     </Tooltip>
                     
-                    <DialogContent className="sm:max-w-md">
+                    <DialogContent className="sm:max-w-md p-6">
                       <DialogHeader>
-                        <DialogTitle>Create New Task</DialogTitle>
+                        <DialogTitle className="text-lg font-semibold">Create New Task</DialogTitle>
                       </DialogHeader>
                       
                       <div className="space-y-4 py-4">
@@ -410,11 +410,12 @@ function Tasks() {
                           placeholder="Task title" 
                           value={newTask.title}
                           onChange={(e: { target: { value: string; }; }) => setNewTask({...newTask, title: e.target.value})}
+                          className="rounded-md border p-2"
                         />
                         
                         <Textarea 
                           placeholder="Description" 
-                          className="min-h-24" 
+                          className="min-h-24 rounded-md border p-2" 
                           value={newTask.description}
                           onChange={(e: { target: { value: string; }; }) => setNewTask({...newTask, description: e.target.value})}
                         />
@@ -506,6 +507,16 @@ function Tasks() {
                       </CardContent>
                     </Card>
                   ))}
+                </div>
+              ) : tasks.length === 0 && !isLoading ? (
+                <div className="text-center py-12">
+                  <div className="bg-gray-50 rounded-xl p-8 inline-block mb-4">
+                    <AlertCircle className="h-12 w-12 text-gray-400 mx-auto" />
+                  </div>
+                  <h3 className="text-xl font-medium text-gray-700 mb-2">No tasks found</h3>
+                  <p className="text-gray-500">
+                    Create your first task to get started
+                  </p>
                 </div>
               ) : filteredTasks.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
